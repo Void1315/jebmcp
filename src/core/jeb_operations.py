@@ -327,6 +327,62 @@ class JebOperations(object):
             }
 
     
+    def rename_local_variable(self, class_name, method_name, old_var_name, new_var_name):
+        """Rename a local variable in the specified method of a class"""
+        if not class_name or not method_name:
+            return {"success": False, "error": "Both class signature and method name are required"}
+
+        if not old_var_name or not new_var_name:
+            return {"success": False, "error": "Both old_var_name and new_var_name are required"}
+
+        try:
+            dexUnit, err = self.project_manager.get_current_dex_unit()
+            if err: return err
+
+            # Find method by name in the class
+            found_method = self._find_method(dexUnit, class_name, method_name)
+            if not found_method:
+                return {"success": False, "error": "Method not found: %s" % method_name}
+
+            # Get decompiler
+            decomp = dexUnit.getDecompiler()
+            if not decomp:
+                return {"success": False, "error": "Cannot acquire decompiler for unit"}
+
+            # Rename local variable using setIdentifierName
+            # Parameters: method signature (original), old variable name, new variable name
+            success = decomp.setIdentifierName(found_method.getSignature(False), old_var_name, new_var_name)
+
+            if not success:
+                return {
+                    "success": False,
+                    "error": (
+                        "Rename failed for variable '%s' in method '%s' of class '%s'. "
+                        "Please check if the variable name exists in the method."
+                        % (old_var_name, method_name, class_name)
+                    )
+                }
+
+            return {
+                "success": True,
+                "class_name": class_name,
+                "method_name": method_name,
+                "old_var_name": old_var_name,
+                "new_var_name": new_var_name,
+                "message": "Local variable renamed successfully"
+            }
+
+        except Exception as e:
+            return {
+                "success": False,
+                "error": (
+                    "Failed to rename local variable '%s' to '%s' in method '%s' of class '%s': %s. "
+                    "You may try updating JEB or this plugin to the latest version to fix potential API changes."
+                    % (old_var_name, new_var_name, method_name, class_name, str(e))
+                ),
+                "traceback": traceback.format_exc()
+            }
+
     def get_method_smali(self, class_signature, method_name):
         """Get all Smali instructions for a specific method in the given class"""
         if not class_signature or not method_name:

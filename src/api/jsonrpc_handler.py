@@ -38,6 +38,7 @@ class JSONRPCHandler(object):
             "rename_class_name": jeb_operations.rename_class_name,
             "rename_method_name": jeb_operations.rename_method_name,
             "rename_field_name": jeb_operations.rename_field_name,
+            "rename_local_variable": jeb_operations.rename_local_variable,
             "set_parameter_name": jeb_operations.set_parameter_name,
             "get_current_project_info": jeb_operations.get_current_project_info,
             "get_method_smali": jeb_operations.get_method_smali,
