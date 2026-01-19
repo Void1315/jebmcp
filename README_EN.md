@@ -121,6 +121,7 @@ Tips:
                "rename_class_name",
                "rename_method_name",
                "rename_field_name",
+               "rename_local_variable",
                "set_parameter_name",
                "reset_parameter_name",
                "get_live_artifact_ids",
@@ -155,6 +156,51 @@ Tips:
 ### MCP.py
 - **Purpose**: Runs through JEB client scripts, calls MCP functionality  
 - **Note**: Does not support direct command-line execution, needs to be used within JEB  
+
+---
+
+## 🏷️ Local Variable Rename Tool
+
+The new `rename_local_variable` tool supports renaming local variables in methods.
+
+### Feature Description
+
+This tool can rename local variable names in the decompiled code of methods, helping improve code readability.
+
+### Parameter Description
+
+- `class_name`: Class signature, supports multiple formats:
+  - Plain class name: e.g. "MainActivity"
+  - Package + class name (dot format): e.g. "com.example.MainActivity"
+  - JNI format signature: e.g. "Lcom/example/MainActivity;"
+- `method_name`: Method name (use `<init>` for constructors)
+- `old_var_name`: Current local variable name
+- `new_var_name`: New local variable name
+
+### Usage Example
+
+```python
+# Rename local variable in constructor
+result = client.call("rename_local_variable", {
+    "class_name": "com.example.MainActivity",
+    "method_name": "<init>",
+    "old_var_name": "arr_z",
+    "new_var_name": "jacocoFlags"
+})
+```
+
+### Return Result
+
+```json
+{
+    "success": true,
+    "class_name": "com.example.MainActivity",
+    "method_name": "<init>",
+    "old_var_name": "arr_z",
+    "new_var_name": "jacocoFlags",
+    "message": "Local variable renamed successfully"
+}
+```
 
 ---
 

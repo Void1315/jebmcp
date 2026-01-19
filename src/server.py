@@ -308,7 +308,7 @@ def rename_field_name(class_name: str, field_name: str, new_name: str, ignore: b
     """
     Rename a field in the specified class of the current APK project.
 
-    This function requires a new_name to perform renaming. 
+    This function requires a new_name to perform renaming.
     If new_name is not provided, an error will be raised.
 
     @param class_name: Class signature. Supports both formats:
@@ -319,6 +319,24 @@ def rename_field_name(class_name: str, field_name: str, new_name: str, ignore: b
     @param ignore: Optional flag to keep the original field name prefix
     """
     return _jeb_call('rename_field_name', class_name, field_name, new_name, ignore)
+
+@mcp.tool()
+def rename_local_variable(class_name: str, method_name: str, old_var_name: str, new_var_name: str):
+    """
+    Rename a local variable in the specified method of a class.
+
+    This function renames a local variable within a method's decompiled code.
+    The variable name must exist in the method for the operation to succeed.
+
+    @param class_name: Class signature. Supports multiple formats:
+        - Plain class name: e.g. "MainActivity"
+        - Package + class with dots: e.g. "com.example.MainActivity"
+        - JNI-style signature: e.g. "Lcom/example/MainActivity;"
+    @param method_name: Name of the method containing the variable
+    @param old_var_name: Current name of the local variable to rename
+    @param new_var_name: New name to assign to the local variable
+    """
+    return _jeb_call('rename_local_variable', class_name, method_name, old_var_name, new_var_name)
 
 @mcp.tool()
 def get_class_type_tree(class_signature: str, max_node_count: int=16):

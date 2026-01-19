@@ -162,6 +162,7 @@ python src/server.py --transport http --host 127.0.0.1 --port 16162
                "rename_class_name",
                "rename_method_name",
                "rename_field_name",
+               "rename_local_variable",
                "set_parameter_name",
                "reset_parameter_name",
                "get_live_artifact_ids",
@@ -197,6 +198,51 @@ python src/server.py --transport http --host 127.0.0.1 --port 16162
 ### MCP.py
 - **用途**：通过 JEB 客户端脚本运行，调用 MCP 功能  
 - **注意**：不支持直接命令行执行，需在 JEB 内部使用  
+
+---
+
+## 🏷️ 局部变量重命名工具
+
+新增的 `rename_local_variable` 工具支持重命名方法中的局部变量。
+
+### 功能说明
+
+该工具可以重命名方法的反编译代码中的局部变量名称，帮助提高代码可读性。
+
+### 参数说明
+
+- `class_name`: 类签名，支持多种格式：
+  - 纯类名：如 "MainActivity"
+  - 包名+类名（点号格式）：如 "com.example.MainActivity"
+  - JNI 格式签名：如 "Lcom/example/MainActivity;"
+- `method_name`: 方法名称（如构造方法使用 `<init>`）
+- `old_var_name`: 当前局部变量名
+- `new_var_name`: 新的局部变量名
+
+### 使用示例
+
+```python
+# 重命名构造方法中的局部变量
+result = client.call("rename_local_variable", {
+    "class_name": "com.example.MainActivity",
+    "method_name": "<init>",
+    "old_var_name": "arr_z",
+    "new_var_name": "jacocoFlags"
+})
+```
+
+### 返回结果
+
+```json
+{
+    "success": true,
+    "class_name": "com.example.MainActivity",
+    "method_name": "<init>",
+    "old_var_name": "arr_z",
+    "new_var_name": "jacocoFlags",
+    "message": "Local variable renamed successfully"
+}
+```
 
 ---
 
